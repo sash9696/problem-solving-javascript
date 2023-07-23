@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Debouncing Example</title>
+</head>
+<body>
+  <button id="button">Click Me</button>
+
+  <script>
+    // Debouncing function
+    function debounce(func, delay) {
+      let timerId;
+      return function(...args) {
+        const context = this;
+        console.log('this', this)
+        clearTimeout(timerId);
+        timerId = setTimeout(function() {
+          func.apply(context, args);
+        }, delay);
+      };
+    }
+
+    // Example function that depends on 'this'
+    function handleClick(event) {
+      console.log("Button clicked by:", this.textContent);
+    }
+
+    // Get the button element
+    const button = document.getElementById("button");
+
+    // Create the debounced version of the handleClick function
+    const debouncedHandleClick = debounce(handleClick, 1000);
+
+    // Attach the debounced function as the event handler
+    button.addEventListener("click", function(event) {
+      debouncedHandleClick.call(this, event);
+    });
+  </script>
+</body>
+</html>

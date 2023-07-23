@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Debouncing Example</title>
+	</head>
+	<body>
+		<input type="text" id="searchInput" placeholder="Type to search..." />
+		<ul id="searchResults"></ul>
+
+		<script>
+			// Debouncing function
+			function debounce(func, delay) {
+				let timerId;
+				return function (...args) {
+					clearTimeout(timerId);
+					timerId = setTimeout(function () {
+						func(...args);
+					}, delay);
+				};
+			}
+
+			// Simulated search function that fetches results from the server
+			function searchAPI(query) {
+                console.log('query',query)
+				// In a real application, you would perform an AJAX request to get the search results
+				// For this example, we'll just simulate the results with a delay
+				const results = [
+					`Result 1 for ${query}`,
+					`Result 2 for ${query}`,
+					`Result 3 for ${query}`,
+				];
+
+				updateSearchResults(results);
+			}
+
+			// Function to update the search results on the page
+			function updateSearchResults(results) {
+				const searchResultsElement =
+					document.getElementById("searchResults");
+				searchResultsElement.innerHTML = "";
+
+				for (const result of results) {
+					const li = document.createElement("li");
+					li.textContent = result;
+					searchResultsElement.appendChild(li);
+				}
+			}
+
+			// Get the search input element
+			const searchInput = document.getElementById("searchInput");
+
+			// Debounce the searchAPI function with a delay of 500ms
+			const debouncedSearchAPI = debounce(searchAPI, 500);
+
+			// Add an event listener to the search input
+			searchInput.addEventListener("input", function (event) {
+				const query = event.target.value;
+				debouncedSearchAPI(query);
+			});
+		</script>
+	</body>
+</html>
